@@ -1,0 +1,4 @@
+// Error test for anonymous function
+
+// missing another parameter
+a = (int a, ) --> { return a; }

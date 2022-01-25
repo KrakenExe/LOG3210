@@ -1,0 +1,5 @@
+// Tests on function statement
+var = (int a, float b) -> {
+        a = 1;
+        return true;
+      };

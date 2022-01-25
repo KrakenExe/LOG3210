@@ -1,0 +1,2 @@
+// Tests on function statement
+var = (int a) -> { return 1; };

@@ -1,0 +1,18 @@
+// Tests on function statement
+var = (float b, float b, float b, int c, bool e) -> {
+    do {
+        if ( 5 == 5 && true )
+            a = 0;
+        else if (false == true) {
+            a = 1;
+        }
+        else {
+            a = 2;
+            b = 2;
+        }
+    } while (true) ;
+
+    h = -123.456E+78;
+
+    return a || false && ( 1 == 1 && true == false);
+};
