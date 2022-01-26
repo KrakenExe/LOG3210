@@ -110,7 +110,9 @@ TOKEN :
 	< SEMICOLON: ";" > |
 	< COMMA: "," > |
 	< #AND: "&&" > |
-	< #OR: "||" >
+	< #OR: "||" > |
+
+	<MATHOPERATOR : <PLUS> | <MINUS> | <FOIS> | <DIV>>
 	// À compléter au besoin
 }
 
@@ -122,8 +124,8 @@ TOKEN :
 	< #LETTER: ["a"-"z","A"-"Z","_"] > |
 	< #DIGIT: ["0"-"9"] > |
 	< INTEGER: ["1"-"9"] (["0"-"9"])* | "0" > |
-	//TODO: Caution! Allows numbers such as "0000.23"... to fix!!! (fixed)
-	< REAL: "0" "." (<INTEGER>) | (["1"-"9"]])+ (["0"-"9"])* "." (["0"-"9"])+ (<EXPONENT>)? |
+	//TODO: Caution! Allows numbers such as "0000.23"... to fix!!! (FIXED)
+	< REAL: "0" "." <INTEGER> | (["1"-"9"])+ (["0"-"9"])* "." (["0"-"9"])+ (<EXPONENT>)? |
     			  (<INTEGER>)+ <EXPONENT> > |
     < #EXPONENT: ["e","E"] (["+","-"])? (["0"-"9"])+ >
 }
@@ -153,7 +155,7 @@ void Block() : { }
 // à finir -- commencez ici!
 void AssignStmt() : { }
 {
-    Identifier()
+    Identifier() <ASSIGN> IntBasicExpr() IntChainExpr()
 }
 
 void Expr() : {}
@@ -171,6 +173,11 @@ void IntLogicExpr() : { }
     IntBasicExpr() (LOOKAHEAD(2)
          <LOGIC> IntBasicExpr()
     )*
+}
+
+void IntChainExpr() : { }
+{
+    (<MATHOPERATOR> IntBasicExpr())*
 }
 
 void IntBasicExpr() : { }
