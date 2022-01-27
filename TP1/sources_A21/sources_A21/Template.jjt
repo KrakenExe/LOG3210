@@ -183,7 +183,7 @@ void DoWhileStmt() : {}
     <DO> <LACC> Block() <RACC> <WHILE> LogicExprInParenthesis()
 }
 
-void StmtInAcc(): {}
+void BlockInAcc(): {}
 {
     <LACC> Block() <RACC>
 }
