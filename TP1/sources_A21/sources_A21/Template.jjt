@@ -81,7 +81,8 @@ TOKEN :
 	< BOOLEAN : < TRUE > | < FALSE > > |
     < #FALSE : "false" > |
     < #TRUE : "true" > |
-    < WHILE : "while" >
+    < WHILE : "while" > |
+    < DO : "do" >
 
 	// À compléter au besoin
 }
@@ -148,7 +149,7 @@ TOKEN :
 // à compléter
 void Stmt() : { }
 {
-	AssignStmt() <SEMICOLON>
+	AssignStmt() <SEMICOLON> | WhileStmt() | DoWhileStmt()
 }
 
 ASTProgram Program() : { }
@@ -175,6 +176,11 @@ void Expr() : {}
 void WhileStmt() : {}
 {
     <WHILE> LogicExprInParenthesis() (<LACC> Block() <RACC> | Stmt())
+}
+
+void DoWhileStmt() : {}
+{
+    <DO> <LACC> Block() <RACC> <WHILE> LogicExprInParenthesis()
 }
 
 
