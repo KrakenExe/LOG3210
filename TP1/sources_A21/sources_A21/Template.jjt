@@ -162,18 +162,20 @@ void Block() : { }
 // à finir -- commencez ici!
 void AssignStmt() : { }
 {
-    Identifier() <ASSIGN> IntMathExpression()
+    Identifier() <ASSIGN> Expr() 
 }
 
 void Expr() : {}
 {
-    IntExpr()
+    LOOKAHEAD(2) IntMathExpression() | IntLogicExpr()
 }
+
 
 void IntExpr() : { }
 {
     IntLogicExpr()
 }
+
 
 void IntLogicExpr() : { }
 {
@@ -184,7 +186,7 @@ void IntLogicExpr() : { }
 
 void IntBasicLogicExpr(): { }   // pas dans le code de base
 {
-    BoolValue() | IntBasicExpr() (< COMPARE> IntBasicExpr())? | < NOT > Identifier()
+    BoolValue() | IntBasicExpr() < COMPARE> IntBasicExpr() | < NOT > Identifier()
 }
 
 void IntMathExpression(): { }      // pas dans le code de base
