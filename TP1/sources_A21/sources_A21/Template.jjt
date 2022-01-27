@@ -77,7 +77,11 @@ MORE :
 TOKEN :
 {
 	< PRINT: "print" > |
-	< INPUT: "input" >
+	< INPUT: "input" > |
+	< BOOLEAN : < TRUE > | < FALSE > > |
+    < #FALSE : "false" > |
+    < #TRUE : "true" > |
+    < WHILE : "while" >
 
 	// À compléter au besoin
 }
@@ -113,10 +117,8 @@ TOKEN :
 	< #OR: "||" > |
 
     // pas dans le code de base, créé par moi
-	<MATHOPERATOR : <PLUS> | <MINUS> | <FOIS> | <DIV>> |
-	< BOOLEAN : < TRUE > | < FALSE > > |
-    < #FALSE : "false" > |
-    < #TRUE : "true" >
+	<MATHOPERATOR : <PLUS> | <MINUS> | <FOIS> | <DIV>>
+
 
 
 
@@ -162,7 +164,7 @@ void Block() : { }
 // à finir -- commencez ici!
 void AssignStmt() : { }
 {
-    Identifier() <ASSIGN> Expr() 
+    Identifier() <ASSIGN> Expr()
 }
 
 void Expr() : {}
@@ -170,10 +172,20 @@ void Expr() : {}
     LOOKAHEAD(2) IntMathExpression() | IntLogicExpr()
 }
 
+void WhileStmt() : {}
+{
+    <WHILE> LogicExprInParenthesis() (<LACC> Block() <RACC> | Stmt())
+}
 
-void IntExpr() : { }
+
+void IntExpr() : { } //Fourni dans le code de base mais pas utilisé
 {
     IntLogicExpr()
+}
+
+void LogicExprInParenthesis() : {}
+{
+    <LPAREN> (LOOKAHEAD(2) Identifier() | IntLogicExpr()) <RPAREN>
 }
 
 
@@ -186,7 +198,7 @@ void IntLogicExpr() : { }
 
 void IntBasicLogicExpr(): { }   // pas dans le code de base
 {
-    BoolValue() | IntBasicExpr() < COMPARE> IntBasicExpr() | < NOT > Identifier()
+    BoolValue() | IntBasicExpr() <COMPARE> IntBasicExpr() | < NOT > Identifier()
 }
 
 void IntMathExpression(): { }      // pas dans le code de base
@@ -210,7 +222,7 @@ void IntValue() : { }
 	<INTEGER>
 }
 
-void BoolValue() : { }
+void BoolValue() : { } // pas dans le code de base
 {
     <BOOLEAN>
 }
