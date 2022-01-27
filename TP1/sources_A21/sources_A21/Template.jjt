@@ -170,17 +170,17 @@ void AssignStmt() : { }
 
 void Expr() : {}
 {
-    LOOKAHEAD(2) IntMathExpression() | IntLogicExpr()
+    LOOKAHEAD(2) IntMathExpr() | IntLogicExpr()
 }
 
 void WhileStmt() : {}
 {
-    <WHILE> LogicExprInParenthesis() (<LACC> Block() <RACC> | Stmt())
+    <WHILE> LogicExprInParenthesis() (BlockInAcc() | Stmt())
 }
 
 void DoWhileStmt() : {}
 {
-    <DO> <LACC> Block() <RACC> <WHILE> LogicExprInParenthesis()
+    <DO> BlockInAcc() <WHILE> LogicExprInParenthesis()
 }
 
 void BlockInAcc(): {}
@@ -195,7 +195,7 @@ void IntExpr() : { } //Fourni dans le code de base mais pas utilisé
 
 void LogicExprInParenthesis() : {}
 {
-    <LPAREN> (LOOKAHEAD(2) Identifier() | IntLogicExpr()) <RPAREN>
+    <LPAREN> (LOOKAHEAD(2) IntBasicExpr() | IntLogicExpr()) <RPAREN> // l'expression logique utilisée pour les while et if. Peut être une expression ou un nombre / une variable
 }
 
 
@@ -211,10 +211,12 @@ void IntBasicLogicExpr(): { }   // pas dans le code de base
     BoolValue() | IntBasicExpr() <COMPARE> IntBasicExpr() | <NOT> Identifier()
 }
 
-void IntMathExpression(): { }      // pas dans le code de base
+void IntMathExpr(): { }      // pas dans le code de base
 {
     IntBasicExpr() (LOOKAHEAD(2) <MATHOPERATOR> IntBasicExpr())*
 }
+
+
 
 void IntBasicExpr() : { }
 {
