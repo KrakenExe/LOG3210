@@ -188,6 +188,14 @@ void BlockInAcc(): {}
     <LACC> Block() <RACC>
 }
 
+
+void term() : {}
+{
+    <LPAREN> Expr() <RPAREN> | IntBasicExpr() | <MINUS> term()
+}
+
+
+
 void IntExpr() : { } //Fourni dans le code de base mais pas utilisé
 {
     IntLogicExpr()
