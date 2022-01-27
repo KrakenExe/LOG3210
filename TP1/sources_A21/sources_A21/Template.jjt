@@ -189,7 +189,12 @@ void BlockInAcc(): {}
 }
 
 
-void term() : {}
+void MultExpr(): {}
+{
+    term() ((<FOIS> | <DIV> ) term())*
+}
+
+void term(): {}
 {
     <LPAREN> Expr() <RPAREN> | IntBasicExpr() | <MINUS> term()
 }
