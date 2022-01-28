@@ -191,7 +191,7 @@ void BlockInAcc(): {}
 
 void LogicExpr(): {}
 {
-    CompExpr() (<LOGIC> CompExpr())*
+    (CompExpr() | BoolExpr()) (<LOGIC> (CompExpr() | BoolExpr()))*
 }
 
 
@@ -237,7 +237,7 @@ void IntLogicExpr() : { }
 
 void IntBasicLogicExpr(): { }   // pas dans le code de base
 {
-    BoolValue() | IntBasicExpr() <COMPARE> IntBasicExpr() | <NOT> Identifier()
+    BoolExpr() | IntBasicExpr() <COMPARE> IntBasicExpr() | <NOT> Identifier()
 }
 
 void IntMathExpr(): { }      // pas dans le code de base
@@ -263,7 +263,7 @@ void IntValue() : { }
 	<INTEGER>
 }
 
-void BoolValue() : { } // pas dans le code de base
+void BoolExpr() : { } // pas dans le code de base
 {
     <BOOLEAN>
 }
