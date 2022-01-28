@@ -168,10 +168,7 @@ void AssignStmt() : { }
     Identifier() <ASSIGN> Expr()
 }
 
-void Expr() : {}
-{
-    LOOKAHEAD(2) IntMathExpr() | IntLogicExpr()
-}
+
 
 void WhileStmt() : {}
 {
@@ -188,6 +185,10 @@ void BlockInAcc(): {}
     <LACC> Block() <RACC>
 }
 
+void Expr() : {}
+{
+    LogicExpr()
+}
 
 void LogicExpr(): {}
 {
