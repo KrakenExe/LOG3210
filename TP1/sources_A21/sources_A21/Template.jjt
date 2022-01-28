@@ -135,8 +135,9 @@ TOKEN :
 	< #DIGIT: ["0"-"9"] > |
 	< INTEGER: ["1"-"9"] (["0"-"9"])* | "0" > |
 	//TODO: Caution! Allows numbers such as "0000.23"... to fix!!! (FIXED)
-	< REAL: "0" "." <INTEGER> | (["1"-"9"])+ (["0"-"9"])* "." (["0"-"9"])+ (<EXPONENT>)? |
-    			  (<INTEGER>)+ <EXPONENT> > |
+	< REAL: ((<MINUS>)? ("0" | <INTEGER> ) "." (<INTEGER>)? (<EXPONENT>)?) |
+	    ((<MINUS>)? ("0" | <INTEGER>)? "." <INTEGER> (<EXPONENT>)?) |
+	    (<MINUS>)? <INTEGER> (<EXPONENT>)? > |
     < #EXPONENT: ["e","E"] (["+","-"])? (["0"-"9"])+ >
 }
 
@@ -149,7 +150,7 @@ TOKEN :
 // à compléter
 void Stmt() : { }
 {
-	AssignStmt() <SEMICOLON> | WhileStmt() | DoWhileStmt()
+	(AssignStmt() <SEMICOLON>) | WhileStmt() | DoWhileStmt()
 }
 
 ASTProgram Program() : { }
