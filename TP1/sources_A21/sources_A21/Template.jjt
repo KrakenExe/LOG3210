@@ -172,17 +172,12 @@ void AssignStmt() : { }
 
 void WhileStmt() : {}
 {
-    <WHILE> <LPAREN> Expr() <RPAREN> (BlockInAcc() | Stmt())
+    <WHILE> <LPAREN> Expr() <RPAREN> ((<LACC> Block() <RACC>) | Stmt())
 }
 
 void DoWhileStmt() : {}
 {
-    <DO> BlockInAcc() <WHILE> <LPAREN> Expr() <RPAREN>
-}
-
-void BlockInAcc(): {}
-{
-    <LACC> Block() <RACC>
+    <DO> <LACC> Block() <RACC> <WHILE> <LPAREN> Expr() <RPAREN>
 }
 
 void Expr() : {}
