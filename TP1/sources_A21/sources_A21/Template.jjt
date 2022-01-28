@@ -189,6 +189,11 @@ void BlockInAcc(): {}
 }
 
 
+void AddExpr(): {}
+{
+    MultExpr() ((<PLUS> | <MINUS> ) MultExpr())*
+}
+
 void MultExpr(): {}
 {
     term() ((<FOIS> | <DIV> ) term())*
