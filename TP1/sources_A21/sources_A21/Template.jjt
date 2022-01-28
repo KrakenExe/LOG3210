@@ -82,7 +82,9 @@ TOKEN :
     < #FALSE : "false" > |
     < #TRUE : "true" > |
     < WHILE : "while" > |
-    < DO : "do" >
+    < DO : "do" > |
+    < IF : "if" > |
+    < ELSE : "else" >
 
 	// À compléter au besoin
 }
@@ -150,7 +152,7 @@ TOKEN :
 // à compléter
 void Stmt() : { }
 {
-	(AssignStmt() <SEMICOLON>) | WhileStmt() | DoWhileStmt()
+	(AssignStmt() <SEMICOLON>) | WhileStmt() | DoWhileStmt() | IfStmt() 
 }
 
 ASTProgram Program() : { }
@@ -169,8 +171,6 @@ void AssignStmt() : { }
     Identifier() <ASSIGN> Expr()
 }
 
-
-
 void WhileStmt() : {}
 {
     <WHILE> <LPAREN> Expr() <RPAREN> ((<LACC> Block() <RACC>) | Stmt())
@@ -178,7 +178,12 @@ void WhileStmt() : {}
 
 void DoWhileStmt() : {}
 {
-    <DO> <LACC> Block() <RACC> <WHILE> <LPAREN> Expr() <RPAREN>
+    <DO> <LACC> Block() <RACC> <WHILE> <LPAREN> Expr() <RPAREN> <SEMICOLON>
+}
+
+void IfStmt(): {}
+{
+    <IF> <LPAREN> Expr() <RPAREN> (Stmt() | (<LACC> Block() <RACC>)) (LOOKAHEAD(2) <ELSE> <IF> <LPAREN> Expr() <RPAREN> <LACC> Block() <RACC>)* (<ELSE> <LACC> Block() <RACC>)?
 }
 
 void Expr() : {}
@@ -190,7 +195,6 @@ void LogicExpr(): {}
 {
     (CompExpr() | BoolExpr()) (<LOGIC> (CompExpr() | BoolExpr()))*
 }
-
 
 void CompExpr(): {}
 {
@@ -211,7 +215,6 @@ void TermExpr(): {}
 {
     <LPAREN> Expr() <RPAREN> | <MINUS> TermExpr() | <NOT> Identifier() | IntBasicExpr()
 }
-
 
 void IntBasicExpr() : { }
 {
