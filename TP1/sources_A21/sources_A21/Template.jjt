@@ -84,7 +84,8 @@ TOKEN :
     < WHILE : "while" > |
     < DO : "do" > |
     < IF : "if" > |
-    < ELSE : "else" >
+    < ELSE : "else" > |
+    < FOR : "for" >
 
 	// À compléter au besoin
 }
@@ -152,7 +153,7 @@ TOKEN :
 // à compléter
 void Stmt() : { }
 {
-	(AssignStmt() <SEMICOLON>) | WhileStmt() | DoWhileStmt() | IfStmt() 
+	(AssignStmt() <SEMICOLON>) | WhileStmt() | DoWhileStmt() | IfStmt() | ForStmt()
 }
 
 ASTProgram Program() : { }
@@ -183,7 +184,12 @@ void DoWhileStmt() : {}
 
 void IfStmt(): {}
 {
-    <IF> <LPAREN> Expr() <RPAREN> (Stmt() | (<LACC> Block() <RACC>)) (LOOKAHEAD(2) <ELSE> <IF> <LPAREN> Expr() <RPAREN> <LACC> Block() <RACC>)* (<ELSE> <LACC> Block() <RACC>)?
+    <IF> <LPAREN> Expr() <RPAREN> (Stmt() | (<LACC> Block() <RACC>)) (LOOKAHEAD(2) <ELSE> <IF> <LPAREN> Expr() <RPAREN> <LACC> Block() <RACC>)* (LOOKAHEAD(2) <ELSE> <LACC> Block() <RACC>)?
+}
+
+void ForStmt(): {}
+{
+    <FOR> <LPAREN> (AssignStmt())? <SEMICOLON> (Expr())? <SEMICOLON> (AssignStmt())? <RPAREN> <LACC> Block() <RACC>
 }
 
 void Expr() : {}
