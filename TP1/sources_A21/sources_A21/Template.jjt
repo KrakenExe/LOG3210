@@ -85,7 +85,15 @@ TOKEN :
     < DO : "do" > |
     < IF : "if" > |
     < ELSE : "else" > |
-    < FOR : "for" >
+    < FOR : "for" > |
+    < TYPE: <INT> | <BOOL> | <FLOAT> > |
+    < #INT: "int" > |
+    < #BOOL: "bool" > |
+    < #FLOAT: "float" > |
+    < RETURN: "return" > |
+    < SWITCH: "switch" > |
+    < CASE: "case" > |
+    < DEFAULTCASE : "default" >
 
 	// À compléter au besoin
 }
@@ -121,7 +129,8 @@ TOKEN :
 	< #OR: "||" > |
 
     // pas dans le code de base, créé par moi
-	<MATHOPERATOR : <PLUS> | <MINUS> | <FOIS> | <DIV>>
+	<MATHOPERATOR : <PLUS> | <MINUS> | <FOIS> | <DIV>> |
+    <ARROW: "->">
 
 
 
@@ -153,7 +162,7 @@ TOKEN :
 // à compléter
 void Stmt() : { }
 {
-	(AssignStmt() <SEMICOLON>) | WhileStmt() | DoWhileStmt() | IfStmt() | ForStmt()
+	(AssignStmt() <SEMICOLON>) | WhileStmt() | DoWhileStmt() | IfStmt() | ForStmt() | SwitchStmt()
 }
 
 ASTProgram Program() : { }
@@ -169,7 +178,7 @@ void Block() : { }
 // à finir -- commencez ici!
 void AssignStmt() : { }
 {
-    Identifier() <ASSIGN> Expr()
+    Identifier() <ASSIGN> (LOOKAHEAD(2) Expr() | AnonymousStmt())
 }
 
 void WhileStmt() : {}
@@ -184,7 +193,7 @@ void DoWhileStmt() : {}
 
 void IfStmt(): {}
 {
-    <IF> <LPAREN> Expr() <RPAREN> (Stmt() | (<LACC> Block() <RACC>)) (LOOKAHEAD(2) <ELSE> <IF> <LPAREN> Expr() <RPAREN> <LACC> Block() <RACC>)* (LOOKAHEAD(2) <ELSE> <LACC> Block() <RACC>)?
+    <IF> <LPAREN> Expr() <RPAREN> (Stmt() | (<LACC> Block() <RACC>)) (LOOKAHEAD(2) <ELSE> <IF> <LPAREN> Expr() <RPAREN> (Stmt() | (<LACC> Block() <RACC>)))* (LOOKAHEAD(2) <ELSE> (Stmt() | (<LACC> Block() <RACC>)))?
 }
 
 void ForStmt(): {}
@@ -246,5 +255,15 @@ void RealValue(): {}
 
 void BoolExpr() : { } // pas dans le code de base
 {
-    <BOOLEAN>
+    <BOOLEAN> (<COMPARE> <BOOLEAN>)?
+}
+
+void AnonymousStmt() : { }
+{
+    <LPAREN> (<TYPE> <IDENTIFIER> (<COMMA> <TYPE> <IDENTIFIER>)*)? <RPAREN> <ARROW> (Stmt() | <LACC> (Block())? (<RETURN> Expr() <SEMICOLON>)? <RACC>)
+}
+
+void SwitchStmt(): { }
+{
+    <SWITCH> <LPAREN> Expr() <RPAREN> <LACC> (<CASE> Expr() <COLON> Stmt())* (<DEFAULTCASE> <COLON> Stmt())? <RACC>
 }
