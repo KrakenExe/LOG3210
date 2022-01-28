@@ -207,12 +207,12 @@ void AddExpr(): {}
 
 void MultExpr(): {}
 {
-    term() ((<FOIS> | <DIV> ) term())*
+    TermExpr() ((<FOIS> | <DIV> ) TermExpr()) *
 }
 
-void term(): {}
+void TermExpr(): {}
 {
-    <LPAREN> Expr() <RPAREN> | IntBasicExpr() | <MINUS> term()
+    <LPAREN> Expr() <RPAREN> | <MINUS> TermExpr() | <NOT> Identifier() | IntBasicExpr()
 }
 
 
