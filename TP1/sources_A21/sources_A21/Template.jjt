@@ -189,7 +189,7 @@ void IfStmt(): {}
 
 void ForStmt(): {}
 {
-    <FOR> <LPAREN> (AssignStmt())? <SEMICOLON> (Expr())? <SEMICOLON> (AssignStmt())? <RPAREN> <LACC> Block() <RACC>
+    <FOR> <LPAREN> (AssignStmt())? <SEMICOLON> (Expr())? <SEMICOLON> (AssignStmt())? <RPAREN> ((<LACC> Block() <RACC>) | Stmt())
 }
 
 void Expr() : {}
