@@ -228,6 +228,11 @@ void IntValue() : { }
 	<INTEGER>
 }
 
+void RealValue(): {}
+{
+    <REAL>
+}
+
 void BoolExpr() : { } // pas dans le code de base
 {
     <BOOLEAN>
