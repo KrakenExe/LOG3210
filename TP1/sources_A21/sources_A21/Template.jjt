@@ -189,6 +189,12 @@ void BlockInAcc(): {}
 }
 
 
+void LogicExpr(): {}
+{
+    CompExpr() (<LOGIC> CompExpr())*
+}
+
+
 void CompExpr(): {}
 {
     AddExpr() (<COMPARE> AddExpr())*
