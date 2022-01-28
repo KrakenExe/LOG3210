@@ -216,7 +216,8 @@ void TermExpr(): {}
 void IntBasicExpr() : { }
 {
 	Identifier() |
-	IntValue()
+	IntValue() |
+	RealValue()
 }
 
 void Identifier() : { }
