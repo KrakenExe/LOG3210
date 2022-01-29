@@ -275,7 +275,17 @@ void AnonymousStmt() : { }
 
 void SwitchStmt(): { }
 {
-    <SWITCH> <LPAREN> Expr() <RPAREN> <LACC> (<CASE> Expr() <COLON> Stmt())* (<DEFAULTCASE> <COLON> Stmt())? <RACC>
+    <SWITCH> <LPAREN> Expr() <RPAREN> <LACC> (CaseStmt())* (DefaultStmt())? <RACC>
+}
+
+void CaseStmt(): {}
+{
+    <CASE> Expr() <COLON> Stmt()
+}
+
+void DefaultStmt(): {}
+{
+    <DEFAULTCASE> <COLON> Stmt()
 }
 
 
