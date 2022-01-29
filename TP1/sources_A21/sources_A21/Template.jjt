@@ -160,9 +160,9 @@ TOKEN :
 
 
 // à compléter
-void Stmt() : { }
+void Stmt() #void: { }
 {
-	(AssignStmt() <SEMICOLON>) | WhileStmt() | DoWhileStmt() | IfStmt() | ForStmt() | SwitchStmt()
+	((AssignStmt() <SEMICOLON>) | WhileStmt() | DoWhileStmt() | IfStmt() | ForStmt() | SwitchStmt())#Stmt(>1)
 }
 
 ASTProgram Program() : { }
@@ -170,7 +170,7 @@ ASTProgram Program() : { }
 	Block() <EOF> { return jjtThis;  }
 }
 
-void Block() : { }
+void Block() #void: { }
 {
 	 (Stmt())+
 }
@@ -193,7 +193,17 @@ void DoWhileStmt() : {}
 
 void IfStmt(): {}
 {
-    <IF> <LPAREN> Expr() <RPAREN> (Stmt() | (<LACC> Block() <RACC>)) (LOOKAHEAD(2) <ELSE> <IF> <LPAREN> Expr() <RPAREN> (Stmt() | (<LACC> Block() <RACC>)))* (LOOKAHEAD(2) <ELSE> (Stmt() | (<LACC> Block() <RACC>)))?
+    <IF> <LPAREN> Expr() <RPAREN> (Stmt() | (<LACC> Block() <RACC>)) (LOOKAHEAD(2) ElseIfStmt())* (LOOKAHEAD(2) ElseStmt())?
+}
+
+void ElseIfStmt(): {}
+{
+    <ELSE> <IF> <LPAREN> Expr() <RPAREN> (Stmt() | (<LACC> Block() <RACC>))
+}
+
+void ElseStmt(): {}
+{
+    <ELSE> (Stmt() | (<LACC> Block() <RACC>))
 }
 
 void ForStmt(): {}
@@ -201,41 +211,41 @@ void ForStmt(): {}
     <FOR> <LPAREN> (AssignStmt())? <SEMICOLON> (Expr())? <SEMICOLON> (AssignStmt())? <RPAREN> ((<LACC> Block() <RACC>) | Stmt())
 }
 
-void Expr() : {}
+void Expr() #void: {}
 {
-    LogicExpr()
+    (LogicExpr())#Expr(>1)
 }
 
-void LogicExpr(): {}
+void LogicExpr() #void: {}
 {
-    (CompExpr() | BoolExpr()) (<LOGIC> (CompExpr() | BoolExpr()))*
+    ((CompExpr() | BoolExpr()) (<LOGIC> (CompExpr() | BoolExpr()))*)#LogicExpr(>1)
 }
 
-void CompExpr(): {}
+void CompExpr() #void: {}
 {
-    AddExpr() (<COMPARE> AddExpr())*
+    (AddExpr() (<COMPARE> AddExpr())*)#CompExpr(>1)
 }
 
-void AddExpr(): {}
+void AddExpr() #void: {}
 {
-    MultExpr() ((<PLUS> | <MINUS> ) MultExpr())*
+    (MultExpr() ((<PLUS> | <MINUS> ) MultExpr())*)#AddExpr(>1)
 }
 
-void MultExpr(): {}
+void MultExpr() #void: {}
 {
-    TermExpr() ((<FOIS> | <DIV> ) TermExpr()) *
+    (TermExpr() ((<FOIS> | <DIV> ) TermExpr()) *)#MultExpr(>1)
 }
 
-void TermExpr(): {}
+void TermExpr() #void: {}
 {
-    <LPAREN> Expr() <RPAREN> | <MINUS> TermExpr() | <NOT> Identifier() | IntBasicExpr()
+    (<LPAREN> Expr() <RPAREN> | <MINUS> TermExpr() | <NOT> Identifier() | IntBasicExpr())#TermExpr(>1)
 }
 
-void IntBasicExpr() : { }
+void IntBasicExpr() #void: { }
 {
-	Identifier() |
-	IntValue() |
-	RealValue()
+	(Identifier() |
+     	IntValue() |
+     	RealValue())#IntBasicExpr(>1)
 }
 
 void Identifier() : { }
@@ -267,3 +277,5 @@ void SwitchStmt(): { }
 {
     <SWITCH> <LPAREN> Expr() <RPAREN> <LACC> (<CASE> Expr() <COLON> Stmt())* (<DEFAULTCASE> <COLON> Stmt())? <RACC>
 }
+
+
