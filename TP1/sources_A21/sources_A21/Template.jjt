@@ -238,7 +238,7 @@ void MultExpr() #void: {}
 
 void TermExpr() #void: {}
 {
-    (<LPAREN> Expr() <RPAREN> | <MINUS> TermExpr() | <NOT> Identifier() | IntBasicExpr())#TermExpr(>1)
+    (<LPAREN> Expr() <RPAREN> | <MINUS> TermExpr() | (<NOT>)+ Identifier() | IntBasicExpr())#TermExpr(>1)
 }
 
 void IntBasicExpr() #void: { }
