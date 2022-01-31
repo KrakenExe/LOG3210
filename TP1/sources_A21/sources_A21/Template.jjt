@@ -218,12 +218,12 @@ void Expr() #void: {}
 
 void LogicExpr() #void: {}
 {
-    ((CompExpr() | BoolExpr()) (<LOGIC> (CompExpr() | BoolExpr()))*)#LogicExpr(>1)
+    ((LOOKAHEAD(2) CompExpr() | BoolExpr()) (<LOGIC> (LOOKAHEAD(2) CompExpr() | BoolExpr()))*)#LogicExpr(>1)
 }
 
 void CompExpr() #void: {}
 {
-    (AddExpr() (<COMPARE> AddExpr())*)#CompExpr(>1)
+    ((AddExpr() (<COMPARE> AddExpr())*) | (BoolExpr() (<COMPARE> BoolExpr())*))#CompExpr(>1)
 }
 
 void AddExpr() #void: {}
@@ -263,14 +263,24 @@ void RealValue(): {}
     <REAL>
 }
 
-void BoolExpr() : { } // pas dans le code de base
+void BoolExpr(): { } // pas dans le code de base
 {
-    <BOOLEAN> (<COMPARE> <BOOLEAN>)?
+    <BOOLEAN>
 }
 
 void AnonymousStmt() : { }
 {
-    <LPAREN> (<TYPE> <IDENTIFIER> (<COMMA> <TYPE> <IDENTIFIER>)*)? <RPAREN> <ARROW> (Stmt() | <LACC> (Block())? (<RETURN> Expr() <SEMICOLON>)? <RACC>)
+    <LPAREN> (ParamStmt() (<COMMA> ParamStmt())*)? <RPAREN> <ARROW> (Stmt() | <LACC> (Block())? (ReturnStmt())? <RACC>)
+}
+
+void ParamStmt() : { }
+{
+    <TYPE> <IDENTIFIER>
+}
+
+void ReturnStmt() : { }
+{
+    <RETURN> Expr() <SEMICOLON>
 }
 
 void SwitchStmt(): { }
@@ -287,5 +297,3 @@ void DefaultStmt(): {}
 {
     <DEFAULTCASE> <COLON> Stmt()
 }
-
-
