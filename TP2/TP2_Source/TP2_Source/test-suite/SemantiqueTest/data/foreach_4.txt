@@ -1,0 +1,8 @@
+Declaration
+real a;
+listreal [] e;
+EndDeclaration
+
+foreach(num d: e) {
+    a = 1.0;
+}

@@ -1,0 +1,5 @@
+Declaration
+real a;
+EndDeclaration
+
+a = 1;

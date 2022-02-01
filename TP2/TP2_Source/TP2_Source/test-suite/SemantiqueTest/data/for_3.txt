@@ -1,0 +1,9 @@
+Declaration
+num d;
+num i;
+num c;
+EndDeclaration
+
+for(c = 0; d + 1; i = i + 5) {
+    d = (1 / 1) + 2;
+}

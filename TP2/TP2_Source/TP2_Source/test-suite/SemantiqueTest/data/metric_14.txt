@@ -1,0 +1,6 @@
+Declaration
+real a;
+real b;
+bool c;
+EndDeclaration
+c = b == a;

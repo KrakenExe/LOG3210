@@ -1,0 +1,8 @@
+Declaration
+num a;
+listbool [] b;
+EndDeclaration
+
+foreach(num c: b) {
+    a = 1 + 1;
+}

@@ -1,0 +1,8 @@
+Declaration
+num a;
+num e;
+EndDeclaration
+
+foreach(bool d: e) {
+    a = 1 + 1 / 3;
+}

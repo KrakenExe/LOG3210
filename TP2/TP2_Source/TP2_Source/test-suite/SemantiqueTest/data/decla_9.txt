@@ -1,0 +1,7 @@
+Declaration
+listbool [] f;
+listnum [] c;
+listnum [] e;
+listbool [] r;
+listbool [] r;
+EndDeclaration

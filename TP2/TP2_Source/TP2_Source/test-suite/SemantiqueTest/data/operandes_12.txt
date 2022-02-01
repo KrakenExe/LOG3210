@@ -1,0 +1,7 @@
+Declaration
+num a;
+num b;
+EndDeclaration
+
+// erreur operandes
+a = b + 2.0;

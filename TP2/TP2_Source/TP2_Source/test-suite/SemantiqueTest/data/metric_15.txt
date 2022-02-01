@@ -1,0 +1,18 @@
+Declaration
+num a;
+listnum [] b;
+listreal [] c;
+EndDeclaration
+
+a = 1 + 1;
+
+foreach (num z: b) {
+    a = 1;
+}
+
+
+foreach (real y: c) {
+    a = 2;
+}
+
+a = 2 + 2;

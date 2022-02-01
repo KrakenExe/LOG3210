@@ -1,0 +1,16 @@
+Declaration
+num a;
+listnum [] b;
+
+EndDeclaration
+
+a = 1 + 1;
+
+foreach (num c: b) {
+    a = a + (c * 1) + 5 / 2;
+    if(true) {
+        c = 7;
+    }
+}
+
+a = 2 + 2 / 2;

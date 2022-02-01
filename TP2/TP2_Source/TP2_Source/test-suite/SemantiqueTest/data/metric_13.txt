@@ -1,0 +1,43 @@
+Declaration
+num a;
+num y;
+listnum [] b;
+num c;
+bool d;
+listbool [] e;
+EndDeclaration
+
+a = 1 + 1;
+
+foreach (num i: b) {
+    a = a + (c * 1) + 5 / i;
+    if(true) {
+        c = 7;
+    }
+}
+
+while ( 1 == 1 ) {
+    a = 2 + 2 / 2;
+    if ( (a + a < 5) && true) {
+        d = (( true || false ) && true ) || false;
+
+    } else {
+        foreach(bool f : e) {
+            f = a > 3 || 6 < 4 && 5 > 5;
+            d = f;
+            for(c = 0; a < 1; y = y + 1) {
+                a = 1 + 1;
+            }
+        }
+    }
+    if (false) {
+        foreach(num o : b) {
+            for(c = 0; a < 1; y = y + 1 / 1) {
+                a = 1 + 1;
+            }
+            f = a > 3 || 6 < 4 && 5 > 5;
+            o = o;
+        }
+    }
+}
+

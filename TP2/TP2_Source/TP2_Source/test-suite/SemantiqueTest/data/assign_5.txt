@@ -1,0 +1,6 @@
+Declaration
+bool a;
+num b;
+EndDeclaration
+
+a = -b;

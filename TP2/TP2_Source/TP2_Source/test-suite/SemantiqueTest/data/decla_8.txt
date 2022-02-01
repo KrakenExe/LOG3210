@@ -1,0 +1,4 @@
+Declaration
+bool a;
+listbool [] a;
+EndDeclaration

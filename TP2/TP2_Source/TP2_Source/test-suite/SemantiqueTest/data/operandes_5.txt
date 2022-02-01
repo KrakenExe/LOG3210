@@ -1,0 +1,6 @@
+Declaration
+num a;
+EndDeclaration
+
+// bad operandes
+a = false > 1;

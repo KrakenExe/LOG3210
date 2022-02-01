@@ -1,0 +1,7 @@
+Declaration
+num a;
+num b;
+listnum [] c;
+EndDeclaration
+
+a = - b * 1 ;
