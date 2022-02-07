@@ -115,7 +115,11 @@ public class SemantiqueVisitor implements ParserVisitor {
             type = VarType.listreal;
         }
 
-        symbolTable.put(varName, type);
+        if(symbolTable.containsKey(varName)){
+            print(String.format("Invalid declaration... variable %s already exists",varName));
+        } else {
+            symbolTable.put(varName, type);
+        }
 
         return null;
     }
