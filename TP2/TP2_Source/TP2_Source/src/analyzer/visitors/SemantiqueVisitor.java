@@ -97,7 +97,20 @@ public class SemantiqueVisitor implements ParserVisitor {
 
     @Override
     public Object visit(ASTListDeclaration node, Object data) {
-        node.childrenAccept(this, data);
+        //l'index de jjGetChild est à 2 parce que les enfants 0 et 1 sont les crochets "[]" dans la déclaration de la liste
+        String varName = ((ASTIdentifier) node.jjtGetChild(2)).getValue();
+        String typeName = node.getValue();
+
+        VarType type = VarType.listnum;
+
+        if(typeName.equals("listBool")){
+            type = VarType.listbool;
+        }else if(typeName.equals("listReal")){
+            type = VarType.listreal;
+        }
+
+        symbolTable.put(varName, type);
+
         return null;
     }
 
