@@ -103,8 +103,7 @@ public class SemantiqueVisitor implements ParserVisitor {
 
     @Override
     public Object visit(ASTListDeclaration node, Object data) {
-        //l'index de jjGetChild est à 2 parce que les enfants 0 et 1 sont les crochets "[]" dans la déclaration de la liste
-        String varName = ((ASTIdentifier) node.jjtGetChild(2)).getValue();
+        String varName = ((ASTIdentifier) node.jjtGetChild(0)).getValue();
         String typeName = node.getValue();
 
         VarType type = VarType.listnum;
