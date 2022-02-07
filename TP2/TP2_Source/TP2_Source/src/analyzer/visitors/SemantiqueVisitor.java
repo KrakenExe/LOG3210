@@ -90,7 +90,13 @@ public class SemantiqueVisitor implements ParserVisitor {
             type = VarType.real;
         }
 
-        symbolTable.put(varName, type);
+        // on vérifie si la déclaration est unique
+        if(symbolTable.containsKey(varName)){
+            print(String.format("Invalid declaration... variable %s already exists",varName));
+        } else {
+            symbolTable.put(varName, type);
+        }
+
 
         return null;
     }
