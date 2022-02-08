@@ -188,12 +188,10 @@ public class SemantiqueVisitor implements ParserVisitor {
     @Override
     public Object visit(ASTAssignStmt node, Object data) {
         node.childrenAccept(this, data);
-
         String varName = ((ASTIdentifier) node.jjtGetChild(0)).getValue();
         if(!symbolTable.containsKey(varName)){
             print(String.format("Invalid use of undefined Identifier %s",varName));
         }
-
         return null;
     }
 
@@ -215,6 +213,7 @@ public class SemantiqueVisitor implements ParserVisitor {
         les opérateurs == et != peuvent être utilisé pour les nombres, les réels et les booléens, mais il faut que le type soit le même
         des deux côté de l'égalité/l'inégalité.
         */
+
         return null;
     }
 
@@ -223,9 +222,9 @@ public class SemantiqueVisitor implements ParserVisitor {
     }
 
     /*
-    opérateur binaire
-    si il n'y a qu'un enfant, aucune vérification à faire.
-    par exemple, un AddExpr peut retourné le type "Bool" à condition de n'avoir qu'un seul enfant.
+    Opérateur binaire
+    s'il n'y a qu'un enfant, aucune vérification à faire.
+    Par exemple, un AddExpr peut retourner le type "Bool" à condition de n'avoir qu'un seul enfant.
     Sinon, il faut s'assurer que les types des valeurs sont les mêmes des deux cotés de l'opération
      */
     @Override
@@ -262,6 +261,10 @@ public class SemantiqueVisitor implements ParserVisitor {
     @Override
     public Object visit(ASTNotExpr node, Object data) {
         node.childrenAccept(this, data);
+        VarType type = ((DataStruct)data).type;
+        if(node.getOps().size() > 0 && !type.equals(VarType.bool)){
+            print("Invalid type in expression");
+        }
         return null;
     }
 
@@ -287,25 +290,31 @@ public class SemantiqueVisitor implements ParserVisitor {
     public Object visit(ASTBoolValue node, Object data) {
         node.childrenAccept(this, data);
         ((DataStruct) data).type = VarType.bool;
-
         return null;
+
     }
 
     @Override
     public Object visit(ASTIdentifier node, Object data) {
-        node.childrenAccept(this, data);
+        if(node.jjtGetParent() instanceof ASTGenValue){
+            String varName = node.getValue();
+            VarType type = symbolTable.get(varName);
+            ((DataStruct)data).type = type;
+        }
         return null;
     }
 
     @Override
     public Object visit(ASTIntValue node, Object data) {
         node.childrenAccept(this, data);
+        ((DataStruct) data).type = VarType.num;
         return null;
     }
 
     @Override
     public Object visit(ASTRealValue node, Object data) {
         node.childrenAccept(this, data);
+        ((DataStruct) data).type = VarType.real;
         return null;
     }
 

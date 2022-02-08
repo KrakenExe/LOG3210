@@ -251,7 +251,7 @@ void UnaExpr() : { Token t;}
 void NotExpr() : { Token t;}
 {
      (t = <NOT> {jjtThis.addOp(t.image);})* GenValue()
-}
+   }
 
 void GenValue() : {}
 {
