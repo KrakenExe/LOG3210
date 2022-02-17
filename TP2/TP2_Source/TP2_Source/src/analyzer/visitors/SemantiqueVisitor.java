@@ -330,10 +330,14 @@ public class SemantiqueVisitor implements ParserVisitor {
 
     @Override
     public Object visit(ASTIdentifier node, Object data) {
+        String varName = node.getValue();
         if(node.jjtGetParent() instanceof ASTGenValue){
-            String varName = node.getValue();
             VarType type = symbolTable.get(varName);
             ((DataStruct)data).type = type;
+        }
+
+        if((node.jjtGetParent() instanceof ASTGenValue || node.jjtGetParent() instanceof ASTForEachStmt) && !symbolTable.containsKey(varName)){
+            print(String.format("Invalid use of undefined Identifier %s",varName));
         }
         return null;
     }
