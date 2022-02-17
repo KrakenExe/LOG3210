@@ -292,20 +292,27 @@ public class SemantiqueVisitor implements ParserVisitor {
     */
     @Override
     public Object visit(ASTNotExpr node, Object data) {
-        node.jjtGetChild(0).jjtAccept(this, data);
-        VarType type = ((DataStruct)data).type;
+        DataStruct childData = new DataStruct();
+        node.jjtGetChild(0).jjtAccept(this, childData);
+        ((DataStruct)data).type = childData.type;
         if(node.getOps().size() > 0){
             OP+=node.getOps().size();
+        }
+        if(node.getOps().contains("!") && !childData.type.equals(VarType.bool)){
+            print("Invalid type in expression");
         }
         return null;
     }
 
     @Override
     public Object visit(ASTUnaExpr node, Object data) {
-        node.jjtGetChild(0).jjtAccept(this, data);
+        DataStruct childData = new DataStruct();
+        node.jjtGetChild(0).jjtAccept(this, childData);
+        ((DataStruct)data).type = childData.type;
         if(node.getOps().size() > 0){
             OP+=node.getOps().size();
         }
+
         return null;
     }
 
