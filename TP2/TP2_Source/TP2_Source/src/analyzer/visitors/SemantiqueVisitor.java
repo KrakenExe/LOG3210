@@ -256,12 +256,20 @@ public class SemantiqueVisitor implements ParserVisitor {
 
     @Override
     public Object visit(ASTMulExpr node, Object data) {
+        VarType[] types = new VarType[node.jjtGetNumChildren()];
         OP+= node.getOps().size();
         for (int i = 0; i < node.jjtGetNumChildren(); i++) {
             DataStruct childData = new DataStruct();
             node.jjtGetChild(i).jjtAccept(this, childData);
             ((DataStruct)data).type = childData.type;
+            if(node.getOps().size()>0){
+                types[i] = childData.type;
+                if(!types[0].equals(types[i])){
+                    print("Invalid type in expression");
+                }
+            }
         }
+
         return null;
     }
 
