@@ -72,7 +72,7 @@ public class SemantiqueVisitor implements ParserVisitor {
     @Override
     public Object visit(ASTDeclaration node, Object data) {
         node.childrenAccept(this, data);
-        VAR++;
+        //VAR++;
         return null;
     }
 
@@ -94,6 +94,7 @@ public class SemantiqueVisitor implements ParserVisitor {
             print(String.format("Invalid declaration... variable %s already exists",varName));
         } else {
             symbolTable.put(varName, type);
+            VAR++;
         }
 
 
@@ -117,6 +118,7 @@ public class SemantiqueVisitor implements ParserVisitor {
             print(String.format("Invalid declaration... variable %s already exists",varName));
         } else {
             symbolTable.put(varName, type);
+            VAR++;
         }
 
         return null;
