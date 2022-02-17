@@ -54,8 +54,7 @@ public class SemantiqueVisitor implements ParserVisitor {
 
     @Override
     public Object visit(SimpleNode node, Object data) {
-        node.childrenAccept(this, data);
-        return null;
+        return data;
     }
 
     @Override
@@ -145,6 +144,7 @@ public class SemantiqueVisitor implements ParserVisitor {
     @Override
     public Object visit(ASTForEachStmt node, Object data) {
         node.childrenAccept(this, data);
+        FOR++;
         return null;
     }
 
@@ -154,6 +154,7 @@ public class SemantiqueVisitor implements ParserVisitor {
     @Override
     public Object visit(ASTForStmt node, Object data) {
         node.childrenAccept(this, data);
+        FOR++;
         return null;
     }
 
@@ -172,12 +173,14 @@ public class SemantiqueVisitor implements ParserVisitor {
     @Override
     public Object visit(ASTIfStmt node, Object data) {
         node.childrenAccept(this, data);
+        IF++;
         return null;
     }
 
     @Override
     public Object visit(ASTWhileStmt node, Object data) {
         node.childrenAccept(this, data);
+        WHILE++;
         return null;
     }
 
@@ -198,7 +201,8 @@ public class SemantiqueVisitor implements ParserVisitor {
     @Override
     public Object visit(ASTExpr node, Object data) {
         //Il est normal que tous les noeuds jusqu'à expr retourne un type.
-        node.childrenAccept(this, data);
+        DataStruct childData = new DataStruct();
+        node.childrenAccept(this, childData);
         return null;
     }
 
@@ -213,6 +217,15 @@ public class SemantiqueVisitor implements ParserVisitor {
         les opérateurs == et != peuvent être utilisé pour les nombres, les réels et les booléens, mais il faut que le type soit le même
         des deux côté de l'égalité/l'inégalité.
         */
+        if(node.jjtGetNumChildren()>1){
+            OP++;
+        }
+        int nChildren = node.jjtGetNumChildren();
+        for (int i = 0; i < node.jjtGetNumChildren(); i++) {
+            DataStruct childData = new DataStruct();
+            node.jjtGetChild(i).jjtAccept(this, childData);
+            ((DataStruct)data).type = childData.type;
+        }
 
         return null;
     }
@@ -229,19 +242,36 @@ public class SemantiqueVisitor implements ParserVisitor {
      */
     @Override
     public Object visit(ASTAddExpr node, Object data) {
-        node.childrenAccept(this, data);
+        OP+= node.getOps().size();
+        for (int i = 0; i < node.jjtGetNumChildren(); i++) {
+            DataStruct childData = new DataStruct();
+            node.jjtGetChild(i).jjtAccept(this, childData);
+            ((DataStruct)data).type = childData.type;
+        }
+
         return null;
     }
 
     @Override
     public Object visit(ASTMulExpr node, Object data) {
-        node.childrenAccept(this, data);
+        OP+= node.getOps().size();
+        for (int i = 0; i < node.jjtGetNumChildren(); i++) {
+            DataStruct childData = new DataStruct();
+            node.jjtGetChild(i).jjtAccept(this, childData);
+            ((DataStruct)data).type = childData.type;
+        }
         return null;
     }
 
     @Override
     public Object visit(ASTBoolExpr node, Object data) {
-        node.childrenAccept(this, data);
+        OP+=node.getOps().size();
+        for (int i = 0; i < node.jjtGetNumChildren(); i++) {
+            DataStruct childData = new DataStruct();
+            node.jjtGetChild(i).jjtAccept(this, childData);
+            ((DataStruct)data).type = childData.type;
+        }
+
         return null;
     }
 
@@ -260,17 +290,20 @@ public class SemantiqueVisitor implements ParserVisitor {
     */
     @Override
     public Object visit(ASTNotExpr node, Object data) {
-        node.childrenAccept(this, data);
+        node.jjtGetChild(0).jjtAccept(this, data);
         VarType type = ((DataStruct)data).type;
-        if(node.getOps().size() > 0 && !type.equals(VarType.bool)){
-            print("Invalid type in expression");
+        if(node.getOps().size() > 0){
+            OP+=node.getOps().size();
         }
         return null;
     }
 
     @Override
     public Object visit(ASTUnaExpr node, Object data) {
-        node.childrenAccept(this, data);
+        node.jjtGetChild(0).jjtAccept(this, data);
+        if(node.getOps().size() > 0){
+            OP+=node.getOps().size();
+        }
         return null;
     }
 
@@ -288,7 +321,6 @@ public class SemantiqueVisitor implements ParserVisitor {
 
     @Override
     public Object visit(ASTBoolValue node, Object data) {
-        node.childrenAccept(this, data);
         ((DataStruct) data).type = VarType.bool;
         return null;
 
@@ -306,14 +338,12 @@ public class SemantiqueVisitor implements ParserVisitor {
 
     @Override
     public Object visit(ASTIntValue node, Object data) {
-        node.childrenAccept(this, data);
         ((DataStruct) data).type = VarType.num;
         return null;
     }
 
     @Override
     public Object visit(ASTRealValue node, Object data) {
-        node.childrenAccept(this, data);
         ((DataStruct) data).type = VarType.real;
         return null;
     }
