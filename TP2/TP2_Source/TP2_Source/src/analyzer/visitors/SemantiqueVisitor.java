@@ -194,11 +194,19 @@ public class SemantiqueVisitor implements ParserVisitor {
      */
     @Override
     public Object visit(ASTAssignStmt node, Object data) {
-        node.childrenAccept(this, data);
+        DataStruct childData = new DataStruct();
+        node.childrenAccept(this, childData);
         String varName = ((ASTIdentifier) node.jjtGetChild(0)).getValue();
+        VarType expectedType = symbolTable.get(varName);
+        VarType actualType = childData.type;
         if(!symbolTable.containsKey(varName)){
             print(String.format("Invalid use of undefined Identifier %s",varName));
         }
+
+        else if(!expectedType.equals(actualType)){
+            print(String.format("Invalid type in assignation of Identifier %s... was expecting %s but got %s", varName, expectedType, actualType));
+        }
+
         return null;
     }
 
@@ -207,6 +215,9 @@ public class SemantiqueVisitor implements ParserVisitor {
         //Il est normal que tous les noeuds jusqu'à expr retourne un type.
         DataStruct childData = new DataStruct();
         node.childrenAccept(this, childData);
+        if(data!=null){
+            ((DataStruct)data).type = childData.type;
+        }
         return null;
     }
 
@@ -222,31 +233,34 @@ public class SemantiqueVisitor implements ParserVisitor {
         des deux côté de l'égalité/l'inégalité.
         */
 
-        VarType[] types = new VarType[node.jjtGetNumChildren()];
-
+        List<VarType> types = new ArrayList<VarType>();
 
         for (int i = 0; i < node.jjtGetNumChildren(); i++) {
             DataStruct childData = new DataStruct();
             node.jjtGetChild(i).jjtAccept(this, childData);
-            ((DataStruct)data).type = childData.type;
-            types[i] = childData.type;
+            types.add(childData.type);
+        }
+
+        if(node.jjtGetNumChildren()==1){
+            ((DataStruct)data).type = types.get(0);
         }
 
         if(node.jjtGetNumChildren()>1){
             OP++;
             ((DataStruct)data).type = VarType.bool;
-            boolean a = node.getValue().equals("==");
-            boolean b = node.getValue().equals("!=");
-            boolean c = node.getValue().equals("<");
-            boolean d = node.getValue().equals(">");
-            boolean e = node.getValue().equals("<=");
-            boolean f = node.getValue().equals(">=");
-            boolean g = types[0].equals(VarType.bool);
-            boolean h = types[1].equals(VarType.bool);
-            boolean i = types[0].equals(types[1]);
+            boolean containsEquals = node.getValue().equals("==");
+            boolean containsNotEquals = node.getValue().equals("!=");
+            boolean containsLesser = node.getValue().equals("<");
+            boolean containsGreater = node.getValue().equals(">");
+            boolean containsLesserOrEqual = node.getValue().equals("<=");
+            boolean containsGreaterOrEqual = node.getValue().equals(">=");
+            boolean leftISBool = types.get(0).equals(VarType.bool);
+            boolean RightIsBool = types.get(1).equals(VarType.bool);
+            boolean sameTypesOnBothSides = types.get(0).equals(types.get(1));
 
 
-            if(!a && !b && !c && !d && !e && !f || !a && !b && g || !a && !b && h || !i){
+            if(!containsEquals && !containsNotEquals && !containsLesser && !containsGreater && !containsLesserOrEqual && !containsGreaterOrEqual ||
+                    !containsEquals && !containsNotEquals && leftISBool || !containsEquals && !containsNotEquals && RightIsBool || !sameTypesOnBothSides){
                 print("Invalid type in expression");
             }
         }
@@ -316,17 +330,28 @@ public class SemantiqueVisitor implements ParserVisitor {
 
     @Override
     public Object visit(ASTBoolExpr node, Object data) {
-        VarType[] types = new VarType[node.jjtGetNumChildren()];
+        List<VarType> types = new ArrayList<VarType>();
         OP+=node.getOps().size();
         for (int i = 0; i < node.jjtGetNumChildren(); i++) {
             DataStruct childData = new DataStruct();
             node.jjtGetChild(i).jjtAccept(this, childData);
             ((DataStruct)data).type = childData.type;
             if(node.getOps().size()>0 && childData.type != null){
-                types[i] = childData.type;
-                if(!types[i].equals(VarType.bool)){
-                    print("Invalid type in expression");
-                }
+                types.add(childData.type);
+            }
+        }
+
+        if(node.jjtGetNumChildren()==1 && !types.isEmpty()){
+            ((DataStruct)data).type = types.get(0);
+        }
+
+        if(node.jjtGetNumChildren()>1 && !types.isEmpty()){
+            ((DataStruct)data).type = VarType.bool;
+        }
+
+        for(VarType type:types){
+            if(!type.equals(VarType.bool)){
+                print("Invalid type in expression");
             }
         }
 
