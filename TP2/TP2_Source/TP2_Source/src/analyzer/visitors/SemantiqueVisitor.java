@@ -8,6 +8,7 @@ import javax.lang.model.type.NullType;
 import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 
 /**
  * Created: 19-01-10
@@ -250,9 +251,6 @@ public class SemantiqueVisitor implements ParserVisitor {
             }
         }
 
-
-
-
         return null;
     }
 
@@ -268,15 +266,21 @@ public class SemantiqueVisitor implements ParserVisitor {
      */
     @Override
     public Object visit(ASTAddExpr node, Object data) {
-        VarType[] types = new VarType[node.jjtGetNumChildren()];
+        List<VarType> types = new ArrayList<VarType>();
         OP+= node.getOps().size();
         for (int i = 0; i < node.jjtGetNumChildren(); i++) {
             DataStruct childData = new DataStruct();
             node.jjtGetChild(i).jjtAccept(this, childData);
             ((DataStruct)data).type = childData.type;
             if(node.getOps().size()>0 && childData.type != null){
-                types[i] = childData.type;
-                if(!types[0].equals(types[i])){
+                types.add(childData.type);
+            }
+        }
+
+        if(!types.isEmpty()){
+            VarType firstType = types.get(0);
+            for(VarType type:types){
+                if(!firstType.equals(type)){
                     print("Invalid type in expression");
                 }
             }
@@ -287,15 +291,21 @@ public class SemantiqueVisitor implements ParserVisitor {
 
     @Override
     public Object visit(ASTMulExpr node, Object data) {
-        VarType[] types = new VarType[node.jjtGetNumChildren()];
+        List<VarType> types = new ArrayList<VarType>();
         OP+= node.getOps().size();
         for (int i = 0; i < node.jjtGetNumChildren(); i++) {
             DataStruct childData = new DataStruct();
             node.jjtGetChild(i).jjtAccept(this, childData);
             ((DataStruct)data).type = childData.type;
             if(node.getOps().size()>0 && childData.type != null){
-                types[i] = childData.type;
-                if(!types[0].equals(types[i])){
+                types.add(childData.type);
+            }
+        }
+
+        if(!types.isEmpty()){
+            VarType firstType = types.get(0);
+            for(VarType type:types){
+                if(!firstType.equals(type)){
                     print("Invalid type in expression");
                 }
             }
@@ -306,11 +316,18 @@ public class SemantiqueVisitor implements ParserVisitor {
 
     @Override
     public Object visit(ASTBoolExpr node, Object data) {
+        VarType[] types = new VarType[node.jjtGetNumChildren()];
         OP+=node.getOps().size();
         for (int i = 0; i < node.jjtGetNumChildren(); i++) {
             DataStruct childData = new DataStruct();
             node.jjtGetChild(i).jjtAccept(this, childData);
             ((DataStruct)data).type = childData.type;
+            if(node.getOps().size()>0 && childData.type != null){
+                types[i] = childData.type;
+                if(!types[i].equals(VarType.bool)){
+                    print("Invalid type in expression");
+                }
+            }
         }
 
         return null;
