@@ -220,15 +220,38 @@ public class SemantiqueVisitor implements ParserVisitor {
         les opérateurs == et != peuvent être utilisé pour les nombres, les réels et les booléens, mais il faut que le type soit le même
         des deux côté de l'égalité/l'inégalité.
         */
-        if(node.jjtGetNumChildren()>1){
-            OP++;
-        }
-        int nChildren = node.jjtGetNumChildren();
+
+        VarType[] types = new VarType[node.jjtGetNumChildren()];
+
+
         for (int i = 0; i < node.jjtGetNumChildren(); i++) {
             DataStruct childData = new DataStruct();
             node.jjtGetChild(i).jjtAccept(this, childData);
             ((DataStruct)data).type = childData.type;
+            types[i] = childData.type;
         }
+
+        if(node.jjtGetNumChildren()>1){
+            OP++;
+            ((DataStruct)data).type = VarType.bool;
+            boolean a = node.getValue().equals("==");
+            boolean b = node.getValue().equals("!=");
+            boolean c = node.getValue().equals("<");
+            boolean d = node.getValue().equals(">");
+            boolean e = node.getValue().equals("<=");
+            boolean f = node.getValue().equals(">=");
+            boolean g = types[0].equals(VarType.bool);
+            boolean h = types[1].equals(VarType.bool);
+            boolean i = types[0].equals(types[1]);
+
+
+            if(!a && !b && !c && !d && !e && !f || !a && !b && g || !a && !b && h || !i){
+                print("Invalid type in expression");
+            }
+        }
+
+
+
 
         return null;
     }
@@ -245,11 +268,18 @@ public class SemantiqueVisitor implements ParserVisitor {
      */
     @Override
     public Object visit(ASTAddExpr node, Object data) {
+        VarType[] types = new VarType[node.jjtGetNumChildren()];
         OP+= node.getOps().size();
         for (int i = 0; i < node.jjtGetNumChildren(); i++) {
             DataStruct childData = new DataStruct();
             node.jjtGetChild(i).jjtAccept(this, childData);
             ((DataStruct)data).type = childData.type;
+            if(node.getOps().size()>0 && childData.type != null){
+                types[i] = childData.type;
+                if(!types[0].equals(types[i])){
+                    print("Invalid type in expression");
+                }
+            }
         }
 
         return null;
@@ -263,7 +293,7 @@ public class SemantiqueVisitor implements ParserVisitor {
             DataStruct childData = new DataStruct();
             node.jjtGetChild(i).jjtAccept(this, childData);
             ((DataStruct)data).type = childData.type;
-            if(node.getOps().size()>0){
+            if(node.getOps().size()>0 && childData.type != null){
                 types[i] = childData.type;
                 if(!types[0].equals(types[i])){
                     print("Invalid type in expression");
