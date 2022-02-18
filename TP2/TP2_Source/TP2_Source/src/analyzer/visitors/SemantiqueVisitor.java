@@ -4,6 +4,7 @@ import analyzer.SemantiqueError;
 import analyzer.ast.*;
 
 import javax.lang.model.element.VariableElement;
+import javax.lang.model.type.NullType;
 import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -302,13 +303,13 @@ public class SemantiqueVisitor implements ParserVisitor {
     public Object visit(ASTNotExpr node, Object data) {
         DataStruct childData = new DataStruct();
         node.jjtGetChild(0).jjtAccept(this, childData);
+        OP+=node.getOps().size();
+        if(node.getOps().size() > 0 && childData.type != null){
+            if(node.getOps().contains("!") && !childData.type.equals(VarType.bool)){
+                print("Invalid type in expression");
+            }
+        }
 
-        if(node.getOps().size() > 0){
-            OP+=node.getOps().size();
-        }
-        if(node.getOps().contains("!") && !childData.type.equals(VarType.bool)){
-            print("Invalid type in expression");
-        }
         ((DataStruct)data).type = childData.type;
         return null;
     }
@@ -317,13 +318,14 @@ public class SemantiqueVisitor implements ParserVisitor {
     public Object visit(ASTUnaExpr node, Object data) {
         DataStruct childData = new DataStruct();
         node.jjtGetChild(0).jjtAccept(this, childData);
+        OP+=node.getOps().size();
+        if(node.getOps().size() > 0 && childData.type != null){
 
-        if(node.getOps().size() > 0){
-            OP+=node.getOps().size();
+            if(node.getOps().contains("-") && childData.type.equals(VarType.bool)){
+                print("Invalid type in expression");
+            }
         }
-        if(node.getOps().contains("-") && childData.type.equals(VarType.bool)){
-            print("Invalid type in expression");
-        }
+
         ((DataStruct)data).type = childData.type;
         return null;
     }
