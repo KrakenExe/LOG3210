@@ -110,9 +110,9 @@ public class SemantiqueVisitor implements ParserVisitor {
 
         VarType type = VarType.listnum;
 
-        if(typeName.equals("listBool")){
+        if(typeName.equals("listbool")){
             type = VarType.listbool;
-        }else if(typeName.equals("listReal")){
+        }else if(typeName.equals("listreal")){
             type = VarType.listreal;
         }
 
@@ -147,8 +147,24 @@ public class SemantiqueVisitor implements ParserVisitor {
 
     @Override
     public Object visit(ASTForEachStmt node, Object data) {
-        node.childrenAccept(this, data);
         FOR++;
+        node.jjtGetChild(0).jjtAccept(this, data);
+        node.jjtGetChild(1).jjtAccept(this, data);
+        node.jjtGetChild(2).jjtAccept(this, data);
+        String varName = ((ASTIdentifier)node.jjtGetChild(0).jjtGetChild(0)).getValue();
+        String listName = ((ASTIdentifier)node.jjtGetChild(1)).getValue();
+        VarType leftType = symbolTable.get(varName);
+        VarType rightType = symbolTable.get(listName);
+
+        if(rightType!=VarType.listbool && rightType!=VarType.listnum && rightType!=VarType.listreal) {
+            print("Array type is required here...");
+        }
+        else if(!(rightType.equals(VarType.listbool) && leftType.equals(VarType.bool)
+                || rightType.equals(VarType.listnum) && leftType.equals(VarType.num)
+                || rightType.equals(VarType.listreal) && leftType.equals(VarType.real))) {
+            print(String.format("Array type %s is incompatible with declared variable of type %s...",symbolTable.get(listName),leftType));
+        }
+
         return null;
     }
 
@@ -157,8 +173,8 @@ public class SemantiqueVisitor implements ParserVisitor {
      */
     @Override
     public Object visit(ASTForStmt node, Object data) {
-        node.childrenAccept(this, data);
         FOR++;
+        callChildenCond(node);
         return null;
     }
 
@@ -167,7 +183,14 @@ public class SemantiqueVisitor implements ParserVisitor {
     -pas que la qualité du code est évalué :)
      */
     private void callChildenCond(SimpleNode node) {
-
+        DataStruct childData = new DataStruct();
+        node.jjtGetChild(0).jjtAccept(this, childData);
+        for (int i = 1; i < node.jjtGetNumChildren(); i++) {
+            node.jjtGetChild(i).jjtAccept(this, childData);
+        }
+        if(!childData.type.equals(VarType.bool)){
+            print("Invalid type in condition");
+        }
     }
 
     /*
@@ -176,15 +199,15 @@ public class SemantiqueVisitor implements ParserVisitor {
      */
     @Override
     public Object visit(ASTIfStmt node, Object data) {
-        node.childrenAccept(this, data);
         IF++;
+        callChildenCond(node);
         return null;
     }
 
     @Override
     public Object visit(ASTWhileStmt node, Object data) {
-        node.childrenAccept(this, data);
         WHILE++;
+        callChildenCond(node);
         return null;
     }
 
