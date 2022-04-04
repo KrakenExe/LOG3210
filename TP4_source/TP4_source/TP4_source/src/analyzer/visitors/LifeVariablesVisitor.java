@@ -292,7 +292,30 @@ public class LifeVariablesVisitor implements ParserVisitor {
      */
     private void compute_IN_OUT() {
         // TODO
-        ArrayList<String> workList = new ArrayList<>();
+        Stack<String> workList = new Stack<>();
+        workList.push("_step" + (previous_step.size()-1));
+        while(!workList.isEmpty()){
+            String key = workList.pop();
+            StepStatus step = allSteps.get(key);
+            for(String successorKey : step.SUCC){
+                StepStatus successor = allSteps.get(successorKey);
+                step.OUT.addAll(successor.IN);
+            }
+
+            HashSet<String> OLD_IN = step.IN;
+            HashSet<String> new_IN = new HashSet<>();
+            new_IN.addAll(step.OUT);
+            new_IN.removeAll(step.DEF);
+            new_IN.addAll(step.REF);
+            step.IN = new_IN;
+
+            if(step.IN != OLD_IN){
+                for(String predecessorKey : step.PRED){
+                    workList.push(predecessorKey);
+                }
+            }
+
+        }
 
 
     }
