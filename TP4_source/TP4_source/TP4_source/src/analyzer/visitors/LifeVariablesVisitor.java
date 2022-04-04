@@ -1,7 +1,6 @@
 package analyzer.visitors;
 
 import analyzer.ast.*;
-import com.sun.org.apache.xerces.internal.impl.xpath.XPath;
 
 import java.io.PrintWriter;
 import java.util.*;
@@ -133,15 +132,12 @@ public class LifeVariablesVisitor implements ParserVisitor {
         String def = ((ASTIdentifier) node.jjtGetChild(0)).getValue();
         StepStatus currentStep = new StepStatus();
         currentStep.DEF.add(def);
-
+        DataStruct childData = new DataStruct();
         for(int i=0; i < node.jjtGetNumChildren(); i++ ) {
-            DataStruct childData = new DataStruct();
             node.jjtGetChild(i).jjtAccept(this,childData);
-            if(i>0) {
-                currentStep.REF.add(childData.varName);
-            }
-
         }
+        childData.variables.remove(0);
+        currentStep.REF.addAll(childData.variables);
         String key = genStep();
         allSteps.put(key,currentStep);
         previous_step.add(key);
@@ -152,7 +148,7 @@ public class LifeVariablesVisitor implements ParserVisitor {
     public Object visit(ASTExpr node, Object data){
         DataStruct childData = new DataStruct();
         node.childrenAccept(this, childData);
-        ((DataStruct)data).varName = childData.varName;
+        ((DataStruct)data).variables.addAll(childData.variables);
         return null;
     }
 
@@ -160,7 +156,7 @@ public class LifeVariablesVisitor implements ParserVisitor {
     public Object visit(ASTAddExpr node, Object data) {
         DataStruct childData = new DataStruct();
         node.childrenAccept(this, childData);
-        ((DataStruct)data).varName = childData.varName;
+        ((DataStruct)data).variables.addAll(childData.variables);
         return null;
     }
 
@@ -168,7 +164,7 @@ public class LifeVariablesVisitor implements ParserVisitor {
     public Object visit(ASTMulExpr node, Object data) {
         DataStruct childData = new DataStruct();
         node.childrenAccept(this, childData);
-        ((DataStruct)data).varName = childData.varName;
+        ((DataStruct)data).variables.addAll(childData.variables);
         return null;
     }
 
@@ -176,7 +172,7 @@ public class LifeVariablesVisitor implements ParserVisitor {
     public Object visit(ASTUnaExpr node, Object data) {
         DataStruct childData = new DataStruct();
         node.childrenAccept(this, childData);
-        ((DataStruct)data).varName = childData.varName;
+        ((DataStruct)data).variables.addAll(childData.variables);
         return null;
     }
 
@@ -184,7 +180,7 @@ public class LifeVariablesVisitor implements ParserVisitor {
     public Object visit(ASTBoolExpr node, Object data) {
         DataStruct childData = new DataStruct();
         node.childrenAccept(this, childData);
-        ((DataStruct)data).varName = childData.varName;
+        ((DataStruct)data).variables.addAll(childData.variables);
         return null;
     }
 
@@ -192,7 +188,7 @@ public class LifeVariablesVisitor implements ParserVisitor {
     public Object visit(ASTCompExpr node, Object data) {
         DataStruct childData = new DataStruct();
         node.childrenAccept(this, childData);
-        ((DataStruct)data).varName = childData.varName;
+        ((DataStruct)data).variables.addAll(childData.variables);
         return null;
     }
 
@@ -200,7 +196,7 @@ public class LifeVariablesVisitor implements ParserVisitor {
     public Object visit(ASTNotExpr node, Object data) {
         DataStruct childData = new DataStruct();
         node.childrenAccept(this, childData);
-        ((DataStruct)data).varName = childData.varName;
+        ((DataStruct)data).variables.addAll(childData.variables);
         return null;
     }
 
@@ -208,7 +204,7 @@ public class LifeVariablesVisitor implements ParserVisitor {
     public Object visit(ASTGenValue node, Object data) {
         DataStruct childData = new DataStruct();
         node.childrenAccept(this, childData);
-        ((DataStruct)data).varName = childData.varName;
+        ((DataStruct)data).variables.addAll(childData.variables);
         return null;
     }
 
@@ -221,10 +217,8 @@ public class LifeVariablesVisitor implements ParserVisitor {
     @Override
     public Object visit(ASTIdentifier node, Object data) {
         // TODO: Ici on a accès au nom des variables
-        DataStruct test = new DataStruct();
-        test.varName = node.getValue();
-        if(data !=null) {
-            ((DataStruct)data).varName = node.getValue();
+        if(data!=null) {
+            ((DataStruct)data).variables.add(node.getValue());
         }
 
         return null;
@@ -298,17 +292,20 @@ public class LifeVariablesVisitor implements ParserVisitor {
      */
     private void compute_IN_OUT() {
         // TODO
+        ArrayList<String> workList = new ArrayList<>();
+
 
     }
 
     private class DataStruct {
-        public String varName;
+        public ArrayList<String> variables;
 
         public DataStruct() {
+            this.variables = new ArrayList<>();
         }
 
-        public DataStruct(String varName) {
-            this.varName = varName;
+        public DataStruct(ArrayList<String> varName) {
+            this.variables = varName;
         }
     }
 }
