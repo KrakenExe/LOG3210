@@ -1,0 +1,41 @@
+c = 0
+_L1
+if a > 1 goto _L2
+goto _L0
+_L2
+_t0 = 1 + 1
+a = _t0
+_L3
+goto _L6
+_L5
+a = 42
+goto _L4
+_L6
+a = 3210
+_L7
+_L8
+if d == 1 goto _L4
+goto _L9
+_L9
+_t1 = a + 42
+a = _t1
+_L10
+_t3 = 1 / 3
+_t2 = _t3 + 5
+c = _t2
+goto _L8
+_L4
+c = 0
+_L11
+if a > 1 goto _L12
+goto _L1
+_L12
+_t4 = - 3210
+a = _t4
+_t5 = i + 1
+i = _t5
+goto _L11
+_t6 = i + 1
+i = _t6
+goto _L1
+_L0

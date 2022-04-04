@@ -1,0 +1,9 @@
+Declaration
+bool a;
+num i;
+num c;
+EndDeclaration
+
+for(c = 0; i < 56 + 78 - 6 / 2; i = i + 1) {
+    a = (1 + 1) == 2;
+}

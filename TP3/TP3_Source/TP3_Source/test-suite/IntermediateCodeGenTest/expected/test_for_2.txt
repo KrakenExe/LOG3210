@@ -1,0 +1,20 @@
+c = 0
+_L1
+_t2 = 6 / 2
+_t1 = 78 - _t2
+_t0 = 56 + _t1
+if i < _t0 goto _L2
+goto _L0
+_L2
+_t3 = 1 + 1
+if _t3 == 2 goto _L3
+goto _L4
+_L3
+a = 1
+goto _L1
+_L4
+a = 0
+_t4 = i + 1
+i = _t4
+goto _L1
+_L0

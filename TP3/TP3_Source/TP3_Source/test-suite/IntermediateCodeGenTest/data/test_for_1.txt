@@ -1,0 +1,9 @@
+Declaration
+num a;
+num i;
+num c;
+EndDeclaration
+
+for(c = 0; a < 1; i = i + 1) {
+    a = 1 + 1;
+}
